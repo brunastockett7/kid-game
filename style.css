@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f6f7fb;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.card {
+  height: 80px;
+  font-size: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #eceef6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card.matched {
+  background: #b9fbc0;
+}
