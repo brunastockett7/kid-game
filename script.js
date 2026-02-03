@@ -1,12 +1,8 @@
-const animals = [
-  "🐶","🐱","🐭","🐰",
-  "🦊","🐻","🐼","🐨",
-  "🐯","🦁","🐮","🐷"
-];
+const animals = ["🐶","🐱","🐭","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐮","🐷"];
 
-let cards = [...animals, ...animals];
-let firstCard = null;
-let secondCard = null;
+let deck = [];
+let first = null;
+let second = null;
 let locked = false;
 let matches = 0;
 
@@ -14,67 +10,66 @@ const grid = document.getElementById("grid");
 const message = document.getElementById("message");
 const restart = document.getElementById("restart");
 
-function shuffle() {
-  cards.sort(() => Math.random() - 0.5);
-}
+const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
 
-function startGame() {
-  grid.innerHTML = "";
-  shuffle();
+function reset() {
+  deck = shuffle([...animals, ...animals]);
+  first = null;
+  second = null;
+  locked = false;
   matches = 0;
   message.textContent = "";
-  firstCard = null;
-  secondCard = null;
-  locked = false;
+  grid.innerHTML = "";
 
-  cards.forEach(animal => {
+  deck.forEach((animal) => {
     const card = document.createElement("div");
     card.className = "card";
     card.textContent = "❓";
-    card.onclick = () => flip(card, animal);
+
+    card.addEventListener("click", () => flip(card, animal));
     grid.appendChild(card);
   });
 }
 
 function flip(card, animal) {
   if (locked) return;
-  if (card === firstCard) return;
   if (card.classList.contains("matched")) return;
+  if (card === first) return;
 
   card.textContent = animal;
 
-  if (!firstCard) {
-    firstCard = card;
+  if (!first) {
+    first = card;
     return;
   }
 
-  secondCard = card;
+  second = card;
   locked = true;
 
-  if (firstCard.textContent === secondCard.textContent) {
-    firstCard.classList.add("matched");
-    secondCard.classList.add("matched");
-    matches++;
-    resetTurn();
+  if (first.textContent === second.textContent) {
+    first.classList.add("matched");
+    second.classList.add("matched");
+    matches += 1;
+
+    first = null;
+    second = null;
+    locked = false;
 
     if (matches === animals.length) {
       message.textContent = "🎉 You matched all the animals!";
     }
-  } else {
-    setTimeout(() => {
-      firstCard.textContent = "❓";
-      secondCard.textContent = "❓";
-      resetTurn();
-    }, 700);
+    return;
   }
+
+  setTimeout(() => {
+    first.textContent = "❓";
+    second.textContent = "❓";
+    first = null;
+    second = null;
+    locked = false;
+  }, 650);
 }
 
-function resetTurn() {
-  firstCard = null;
-  secondCard = null;
-  locked = false;
-}
+restart.addEventListener("click", reset);
 
-restart.onclick = startGame;
-
-startGame();
+reset();
